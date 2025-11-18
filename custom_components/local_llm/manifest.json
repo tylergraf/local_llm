@@ -1,6 +1,7 @@
 {
   "domain": "local_llm",
   "name": "Local LLM",
+  "version": "1.0.0",
   "after_dependencies": ["assist_pipeline", "intent"],
   "codeowners": [],
   "config_flow": true,
