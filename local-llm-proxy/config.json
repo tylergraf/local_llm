@@ -1,0 +1,30 @@
+{
+  "name": "Local LLM Proxy",
+  "version": "1.0.0",
+  "slug": "local-llm-proxy",
+  "description": "Proxy gateway to external LLM servers on your network",
+  "arch": ["amd64", "aarch64", "armv7"],
+  "url": "https://github.com/tylergraf/local_llm",
+  "startup": "application",
+  "boot": "auto",
+  "init": false,
+  "ports": {
+    "8080/tcp": 8080
+  },
+  "ports_description": {
+    "8080/tcp": "Proxy API endpoint"
+  },
+  "host_network": false,
+  "hassio_api": true,
+  "homeassistant_api": false,
+  "options": {
+    "llm_server_url": "http://192.168.1.100:11434",
+    "api_key": "",
+    "timeout": 120
+  },
+  "schema": {
+    "llm_server_url": "url",
+    "api_key": "str?",
+    "timeout": "int(30,300)"
+  }
+}
