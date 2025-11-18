@@ -1,151 +1,206 @@
-# Local LLM for Home Assistant
+# Local LLM Conversation for Home Assistant
 
-[![GitHub Release][releases-shield]][releases]
-[![License][license-shield]](LICENSE)
+A custom Home Assistant integration that connects to external LLM servers with OpenAI-compatible APIs. Use any LLM server on your network or the internet - Ollama, llama.cpp, LM Studio, vLLM, and more.
 
-This repository provides two ways to run local LLMs with Home Assistant:
+## Features
 
-1. **Add-on** (Recommended) - Run Ollama LLM server directly in Home Assistant
-2. **Custom Integration** - Connect to an external LLM server
+- 🌐 **Connect to ANY LLM Server** - Works with any OpenAI-compatible API
+- 🏠 **LAN or Remote** - Connect to servers on your local network or internet
+- 💬 **Full Conversation Agent** - Complete Home Assistant conversation integration
+- 🎨 **Easy Configuration** - Set up through the Home Assistant UI
+- 🔒 **Privacy Focused** - Keep conversations on your own infrastructure
 
-## 🚀 Quick Start
+## Supported LLM Servers
 
-### Option 1: Using the Add-on (Easiest)
+This integration works with any server that provides an OpenAI-compatible API:
 
-1. **Add this repository to Home Assistant:**
-   - Go to **Settings** → **Add-ons** → **Add-on Store**
-   - Click the three dots (⋮) in the top right
-   - Select **Repositories**
-   - Add: `https://github.com/tylergraf/local_llm`
+- **[Ollama](https://ollama.com/)** - Easy local LLM server
+- **[llama.cpp](https://github.com/ggerganov/llama.cpp)** - Lightweight C++ implementation
+- **[LM Studio](https://lmstudio.ai/)** - Desktop LLM server with GUI
+- **[vLLM](https://github.com/vllm-project/vllm)** - High-performance serving
+- **[LocalAI](https://localai.io/)** - Self-hosted OpenAI alternative
+- **[text-generation-webui](https://github.com/oobabooga/text-generation-webui)** - Feature-rich web interface
+- **OpenAI** (or compatible cloud services)
+- Any other OpenAI-compatible API
 
-2. **Install the Local LLM Server add-on**
-   - Find "Local LLM Server" in the store
-   - Click **Install**
-   - Configure your preferred model (e.g., `llama3.2:1b`)
-   - Click **Start**
+## Installation
 
-3. **Configure Home Assistant conversation agent**
-   - Use base URL: `http://localhost:11434/v1`
+### Via HACS (Recommended)
 
-### Option 2: Using the Custom Integration
+1. Open **HACS** in Home Assistant
+2. Click on **Integrations**
+3. Click the three dots (⋮) in the top right
+4. Select **Custom repositories**
+5. Add repository URL: `https://github.com/tylergraf/local_llm`
+6. Category: **Integration**
+7. Click **Add**
+8. Find "Local LLM Conversation" and click **Download**
+9. Restart Home Assistant
 
-If you're running an LLM server elsewhere (external Ollama, llama.cpp, etc.):
+### Manual Installation
 
-1. **Install via HACS:**
-   - Go to **HACS** → **Integrations**
-   - Click the three dots (⋮) → **Custom repositories**
-   - Add: `https://github.com/tylergraf/local_llm`
-   - Category: **Integration**
+1. Download this repository
+2. Copy the `custom_components/local_llm` folder to your Home Assistant `config/custom_components/` directory
+3. Restart Home Assistant
 
-2. **Add the integration:**
-   - Go to **Settings** → **Devices & Services**
-   - Search for "Local LLM"
-   - Enter your LLM server URL (e.g., `http://your-server:11434/v1`)
+## Configuration
 
-## 📦 What's Included
+1. Go to **Settings** → **Devices & Services**
+2. Click **+ Add Integration**
+3. Search for "Local LLM"
+4. Enter your LLM server details:
+   - **Base URL**: Your server endpoint (e.g., `http://192.168.1.100:11434/v1`)
+   - **API Key**: If required (leave blank for most local servers)
+   - **Model**: Model name (optional, uses server default if blank)
 
-### Add-on: Local LLM Server
-- Runs Ollama LLM server in Home Assistant
-- OpenAI-compatible API
-- Automatic model management
-- Works offline
-- Supports multiple architectures (amd64, aarch64)
+### Example Configurations
 
-### Custom Integration: Local LLM Conversation
-- Connects to any OpenAI-compatible LLM API
-- Full Home Assistant conversation agent support
-- Configurable via UI
-- Works with Ollama, llama.cpp, LM Studio, etc.
-
-## 🧠 Supported Models
-
-Any model available in [Ollama's library](https://ollama.com/library):
-
-- `llama3.2:1b` - Fastest, smallest (~2GB RAM)
-- `llama3.2:3b` - Good balance (~4GB RAM)
-- `phi3:mini` - Efficient (~2GB RAM)
-- `mistral:7b` - High quality (~8GB RAM)
-- Many more...
-
-## 💡 Use Cases
-
-- **Voice Assistant**: "Hey Google, what's the weather like?"
-- **Smart Home Control**: Natural language automation
-- **Offline Operation**: No internet required
-- **Privacy**: All processing happens locally
-- **Custom Prompts**: Tailor responses to your needs
-
-## 📋 Requirements
-
-### For Add-on
-- Home Assistant OS or Supervised
-- 4GB+ RAM (8GB+ recommended for larger models)
-- 5GB+ free storage (per model)
-- amd64 or aarch64 architecture
-
-### For Custom Integration
-- Home Assistant (any installation type)
-- External LLM server with OpenAI-compatible API
-
-## 🔧 Configuration
-
-### Add-on Configuration
-
-```json
-{
-  "default_model": "llama3.2:1b",
-  "keep_alive": "5m"
-}
+#### Ollama on LAN
+```
+Base URL: http://192.168.1.50:11434/v1
+API Key: (leave blank)
+Model: llama3.2:3b
 ```
 
-### Integration Configuration
+#### LM Studio on Same Machine
+```
+Base URL: http://localhost:1234/v1
+API Key: (leave blank)
+Model: (leave blank - uses loaded model)
+```
 
-Configure through the Home Assistant UI:
-- **Base URL**: Your LLM server endpoint
-- **API Key**: If required (optional for Ollama)
-- **Model**: Model name if different from server default
+#### Home Assistant in Docker → Host LLM Server
+```
+Base URL: http://host.docker.internal:11434/v1
+API Key: (leave blank)
+Model: llama3.2:3b
+```
 
-## 📖 Documentation
+#### Remote Server
+```
+Base URL: https://my-llm-server.example.com/v1
+API Key: your-api-key-if-required
+Model: llama3.2:3b
+```
 
-- [Add-on Documentation](local-llm/README.md)
-- [Installation Guide](INSTALL.md)
-- [Troubleshooting](#troubleshooting)
+## Usage
 
-## 🐛 Troubleshooting
+Once configured, you can use the LLM in:
 
-### Add-on won't start
-- Check you have enough RAM (4GB minimum)
-- Try a smaller model like `llama3.2:1b`
-- Check add-on logs for specific errors
+### Voice Assistants
+Set it as your conversation agent in Assist settings.
 
-### Integration can't connect
-- Verify your LLM server is running
-- Check the URL is correct (include `/v1` for Ollama)
-- For Docker: use `host.docker.internal` instead of `localhost`
+### Automations
+```yaml
+service: conversation.process
+data:
+  text: "What's the weather like today?"
+  agent_id: conversation.local_llm
+```
+
+### Scripts & Services
+Use the `local_llm.generate` service for custom text generation tasks.
+
+## Setting Up Your LLM Server
+
+Don't have an LLM server yet? Here are quick start guides:
+
+### Option 1: Ollama (Easiest)
+
+**On Mac/Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2:3b
+ollama serve
+```
+
+**On Windows:**
+Download from [ollama.com](https://ollama.com/)
+
+### Option 2: LM Studio
+
+1. Download [LM Studio](https://lmstudio.ai/)
+2. Download a model (e.g., llama-3.2-3b)
+3. Load the model
+4. Click "Local Server" and start the server
+
+### Option 3: llama.cpp Server
+
+```bash
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+make
+./server -m models/your-model.gguf --host 0.0.0.0 --port 8080
+```
+
+## Troubleshooting
+
+### Integration doesn't appear in the list
+- Clear browser cache (Ctrl+Shift+R / Cmd+Shift+R)
+- Verify files are in `custom_components/local_llm/`
+- Check Home Assistant logs for errors
+- Restart Home Assistant completely
+
+### Can't connect to server
+- Verify the LLM server is running
+- Check the URL format includes `/v1` at the end (for Ollama/compatible servers)
+- If HA is in Docker, use `host.docker.internal` instead of `localhost`
+- Check firewall settings allow the connection
+- Test the URL in a browser or with curl:
+  ```bash
+  curl http://your-server:11434/v1/models
+  ```
 
 ### Slow responses
 - Use a smaller/faster model
-- Increase `keep_alive` to keep model in memory
-- Ensure sufficient RAM available
+- Ensure your server has enough RAM
+- Check CPU/GPU utilization on the LLM server
+- Consider upgrading server hardware
 
-## 🤝 Contributing
+### Docker Users - HA Can't Reach LAN Server
+
+If Home Assistant is running in Docker and can't reach your LAN LLM server:
+
+**Option A**: Use host networking
+```yaml
+# docker-compose.yml
+services:
+  homeassistant:
+    network_mode: host
+```
+
+**Option B**: Use the host's IP address
+Instead of `localhost`, use your machine's actual IP (e.g., `192.168.1.50`)
+
+## Advanced Configuration
+
+### Custom System Prompts
+
+You can customize the system prompt through the integration's configuration options to tailor responses for your smart home.
+
+### Multiple LLM Servers
+
+You can add multiple instances of this integration to connect to different LLM servers for different purposes (e.g., fast local model for quick queries, powerful remote model for complex questions).
+
+## Requirements
+
+- Home Assistant 2025.9.0 or newer
+- An LLM server with OpenAI-compatible API
+- Network connectivity to the LLM server
+
+## Contributing
 
 Contributions are welcome! Please feel free to submit issues and pull requests.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
-## ⭐ Support
+## Support
 
-If you find this useful, please consider starring the repository!
+- **Issues**: [GitHub Issues](https://github.com/tylergraf/local_llm/issues)
+- **Discussions**: [Home Assistant Community](https://community.home-assistant.io/)
 
-## 🔗 Links
+## Credits
 
-- [Home Assistant](https://www.home-assistant.io/)
-- [Ollama](https://ollama.com/)
-- [HACS](https://hacs.xyz/)
-
-[releases-shield]: https://img.shields.io/github/release/tylergraf/local_llm.svg
-[releases]: https://github.com/tylergraf/local_llm/releases
-[license-shield]: https://img.shields.io/github/license/tylergraf/local_llm.svg
+Built for the Home Assistant community to enable private, local AI conversations.
