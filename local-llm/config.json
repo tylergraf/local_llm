@@ -1,0 +1,32 @@
+{
+  "name": "Local LLM Server",
+  "version": "1.0.0",
+  "slug": "local-llm",
+  "description": "Run a local LLM server (Ollama) for Home Assistant conversation agent",
+  "arch": ["amd64", "aarch64"],
+  "url": "https://github.com/tylergraf/local_llm",
+  "startup": "application",
+  "boot": "auto",
+  "init": false,
+  "ports": {
+    "11434/tcp": 11434
+  },
+  "ports_description": {
+    "11434/tcp": "Ollama API server"
+  },
+  "host_network": false,
+  "hassio_api": true,
+  "homeassistant_api": false,
+  "privileged": [],
+  "full_access": false,
+  "devices": [],
+  "options": {
+    "default_model": "llama3.2:1b",
+    "keep_alive": "5m"
+  },
+  "schema": {
+    "default_model": "str",
+    "keep_alive": "str"
+  },
+  "image": "ollama/ollama"
+}
