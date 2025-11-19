@@ -4,15 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import MappingProxyType
+from typing import Any
 
 import openai
 from openai.types.images_response import ImagesResponse
-from openai.types.responses import (
-    EasyInputMessageParam,
-    Response,
-    ResponseInputMessageContentListParam,
-    ResponseInputParam,
-    ResponseInputTextParam,
+from openai.types.chat import (
+    ChatCompletionMessageParam,
+    ChatCompletion,
 )
 import voluptuous as vol
 
@@ -134,8 +132,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         )
         client: openai.AsyncClient = entry.runtime_data
 
-        content: ResponseInputMessageContentListParam = [
-            ResponseInputTextParam(type="input_text", text=call.data[CONF_PROMPT])
+        content: list[dict[str, Any]] = [
+            {"type": "text", "text": call.data[CONF_PROMPT]}
         ]
 
         if filenames := call.data.get(CONF_FILENAMES):
@@ -153,14 +151,14 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 )
             )
 
-        messages: ResponseInputParam = [
-            EasyInputMessageParam(type="message", role="user", content=content)
+        messages: list[ChatCompletionMessageParam] = [
+            {"role": "user", "content": content}
         ]
 
         model_args = {
             "model": model,
-            "input": messages,
-            "max_output_tokens": conversation_subentry.data.get(
+            "messages": messages,
+            "max_tokens": conversation_subentry.data.get(
                 CONF_MAX_TOKENS, RECOMMENDED_MAX_TOKENS
             ),
             "top_p": conversation_subentry.data.get(CONF_TOP_P, RECOMMENDED_TOP_P),
@@ -168,25 +166,22 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 CONF_TEMPERATURE, RECOMMENDED_TEMPERATURE
             ),
             "user": call.context.user_id,
-            "store": False,
+            # "store": False,
         }
 
         if model.startswith("o"):
-            model_args["reasoning"] = {
-                "effort": conversation_subentry.data.get(
-                    CONF_REASONING_EFFORT, RECOMMENDED_REASONING_EFFORT
-                )
-            }
+             # Reasoning effort handling if needed
+             pass
 
         try:
-            response: Response = await client.responses.create(**model_args)
+            response: ChatCompletion = await client.chat.completions.create(**model_args)
 
         except openai.OpenAIError as err:
             raise HomeAssistantError(f"Error generating content: {err}") from err
         except FileNotFoundError as err:
             raise HomeAssistantError(f"Error generating content: {err}") from err
 
-        return {"text": response.output_text}
+        return {"text": response.choices[0].message.content}
 
     hass.services.async_register(
         DOMAIN,
